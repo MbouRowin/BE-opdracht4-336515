@@ -18,6 +18,7 @@ class InstructeurModel
                       ,Mobiel
                       ,DatumInDienst
                       ,AantalSterren
+                      ,IsActief
                 FROM  Instructeur
                 ORDER BY AantalSterren DESC";
 
@@ -220,5 +221,21 @@ class InstructeurModel
 
         $this->db->query($sql);
         return $this->db->resultSet();
+    }
+
+    function maakActief($instructeurId)
+    {
+        $sql = "update Instructeur set IsActief = 1 where id = ?";
+        $this->db->query($sql);
+        $this->db->bind(1, $instructeurId);
+        $this->db->single();
+    }
+
+    function maakInactief($instructeurId)
+    {
+        $sql = "update Instructeur set IsActief = 0 where id = ?";
+        $this->db->query($sql);
+        $this->db->bind(1, $instructeurId);
+        $this->db->single();
     }
 }

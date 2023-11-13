@@ -21,6 +21,10 @@ class Instructeur extends BaseController
             $date = date_create($instructeur->DatumInDienst);
             $formatted_date = date_format($date, 'd-m-Y');
 
+            $actiefInactiefHtml = $instructeur->IsActief
+                ? "<a href='/instructeur/maakInactief/$instructeur->Id'><i class='bi bi-hand-thumbs-up'></i></a>"
+                : "<a href='/instructeur/maakActief/$instructeur->Id'><i class='bi bi-bandaid'></i></a>";
+
             $rows .= "<tr>
                         <td>$instructeur->Voornaam</td>
                         <td>$instructeur->Tussenvoegsel</td>
@@ -29,10 +33,11 @@ class Instructeur extends BaseController
                         <td>$formatted_date</td>            
                         <td>$instructeur->AantalSterren</td>            
                         <td>
-                            <a href='" . URLROOT . "/instructeur/overzichtvoertuigen/$instructeur->Id'>
+                            <a href='" . URLROOT . "/instructeur/overzichtVoertuigen/$instructeur->Id'>
                                 <i class='bi bi-car-front'></i>
                             </a>
-                        </td>            
+                        </td>
+                        <td>$actiefInactiefHtml</td>         
                       </tr>";
         }
 
@@ -41,7 +46,7 @@ class Instructeur extends BaseController
             'rows' => $rows
         ];
 
-        $this->view('Instructeur/overzichtinstructeur', $data);
+        $this->view('Instructeur/overzichtInstructeur', $data);
     }
 
     public function overzichtVoertuigen($Id)
@@ -127,10 +132,10 @@ class Instructeur extends BaseController
             $this->instructeurModel->updateVoertuig($id, $instructeur, $typeVoertuig, $type, $bouwjaar, $brandstof, $kenteken);
 
             if ($currentInstructeur) {
-                header("Location: /instructeur/overzichtvoertuigen/$currentInstructeur");
+                header("Location: /instructeur/overzichtVoertuigen/$currentInstructeur");
             } else {
                 $this->instructeurModel->assignVoertuigToInstructeur($id, $instructeur);
-                header("Location: /instructeur/overzichtvoertuigen/$instructeur");
+                header("Location: /instructeur/overzichtVoertuigen/$instructeur");
             }
         } else {
             $instructeurs = $this->instructeurModel->getInstructeurs();
@@ -178,7 +183,7 @@ class Instructeur extends BaseController
                             </td>
                           </tr>
                           <script>
-                            setTimeout(() => location = '/Instructeur/overzichtinstructeur', 3000);
+                            setTimeout(() => location = '/Instructeur/overzichtInstructeur', 3000);
                           </script>
                           ";
         } else {
@@ -223,7 +228,7 @@ class Instructeur extends BaseController
     public function toevoegen($voertuigId, $instructeurId)
     {
         $this->instructeurModel->assignVoertuigToInstructeur($voertuigId, $instructeurId);
-        header("Location: /instructeur/overzichtvoertuigen/$instructeurId");
+        header("Location: /instructeur/overzichtVoertuigen/$instructeurId");
     }
 
     function unassign($instructeurId, $voertuigId)
@@ -233,7 +238,7 @@ class Instructeur extends BaseController
         session_start();
         $_SESSION["message"] = "Het door u geselecteerde voertuig is verwijderd";
 
-        header("Location: /instructeur/overzichtvoertuigen/$instructeurId");
+        header("Location: /instructeur/overzichtVoertuigen/$instructeurId");
     }
 
     function verwijder($instructeurId, $voertuigId)
@@ -261,7 +266,7 @@ class Instructeur extends BaseController
              * Als er geen toegewezen voertuigen zijn komt de onderstaande tekst in de tabel
              */
             $tableRows = "<tr>
-                            <td colspan='8'>
+                            <td colspan='9'>
                                 Er zijn op dit moment geen voertuigen
                             </td>
                           </tr>
@@ -311,5 +316,27 @@ class Instructeur extends BaseController
         $_SESSION["message"] = "Het door u geselecteerde voertuig is verwijderd";
 
         header("Location: /instructeur/overzichtAlleVoertuigen");
+    }
+
+    function maakActief($instructeurId)
+    {
+        $instructeur = $this->instructeurModel->getInstructeurById($instructeurId);
+        $this->instructeurModel->maakActief($instructeurId);
+
+        session_start();
+        $_SESSION["message"] = "Instructeur $instructeur->Voornaam $instructeur->Tussenvoegsel $instructeur->Achternaam is beter/terug van verlof gemeld";
+
+        header("Location: /instructeur/overzichtVoertuigen/$instructeurId");
+    }
+
+    function maakInactief($instructeurId)
+    {
+        $instructeur = $this->instructeurModel->getInstructeurById($instructeurId);
+        $this->instructeurModel->maakInactief($instructeurId);
+
+        session_start();
+        $_SESSION["message"] = "Instructeur $instructeur->Voornaam $instructeur->Tussenvoegsel $instructeur->Achternaam is ziek/met verlof gemeld";
+
+        header("Location: /instructeur/overzichtVoertuigen/$instructeurId");
     }
 }
