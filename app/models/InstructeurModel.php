@@ -45,6 +45,7 @@ class InstructeurModel
                             ,TYVO.TypeVoertuig
                             ,TYVO.RijbewijsCategorie
                             ,VOER.Id
+                            ,(SELECT COUNT(*) >= 2 from VoertuigInstructeur where VoertuigId = VOER.Id) as Multiple
 
                 FROM        Voertuig    AS  VOER
                 
@@ -56,8 +57,12 @@ class InstructeurModel
                 
                 ON          VOIN.VoertuigId = VOER.Id
                 
-                WHERE       VOIN.InstructeurId = $Id
-                
+                INNER JOIN  Instructeur AS INST
+
+                ON          VOIN.InstructeurId = INST.Id
+
+                WHERE       INST.IsActief AND VOIN.InstructeurId = $Id
+
                 ORDER BY    TYVO.RijbewijsCategorie DESC";
 
         $this->db->query($sql);
@@ -83,8 +88,12 @@ class InstructeurModel
                 LEFT JOIN  VoertuigInstructeur AS VOIN
                 
                 ON          VOIN.VoertuigId = VOER.Id
+
+                INNER JOIN  Instructeur AS INST
+
+                ON          VOIN.InstructeurId = INST.Id
                 
-                WHERE       VOIN.InstructeurId is null
+                WHERE       VOIN.InstructeurId is null OR NOT INST.IsActief
                 
                 ORDER BY    VOER.Bouwjaar DESC";
 
@@ -215,7 +224,9 @@ class InstructeurModel
                 
                 ON          VOIN.VoertuigId = VOER.Id
 
-                LEFT JOIN Instructeur AS INS ON VOIN.InstructeurId = INS.Id
+                LEFT JOIN Instructeur AS INS
+                
+                ON VOIN.InstructeurId = INS.Id
                 
                 ORDER BY    VOER.Bouwjaar DESC";
 
@@ -225,7 +236,12 @@ class InstructeurModel
 
     function maakActief($instructeurId)
     {
-        $sql = "update Instructeur set IsActief = 1 where id = ?";
+        $sql = "update Instructeur set IsActief = 1 where Id = ?";
+        $this->db->query($sql);
+        $this->db->bind(1, $instructeurId);
+        $this->db->single();
+
+        $sql = "update VoertuigInstructeur set IsActief = 1 where InstructeurId = ?";
         $this->db->query($sql);
         $this->db->bind(1, $instructeurId);
         $this->db->single();
@@ -233,7 +249,12 @@ class InstructeurModel
 
     function maakInactief($instructeurId)
     {
-        $sql = "update Instructeur set IsActief = 0 where id = ?";
+        $sql = "update Instructeur set IsActief = 0 where Id = ?";
+        $this->db->query($sql);
+        $this->db->bind(1, $instructeurId);
+        $this->db->single();
+
+        $sql = "update VoertuigInstructeur set IsActief = 0 where InstructeurId = ?";
         $this->db->query($sql);
         $this->db->bind(1, $instructeurId);
         $this->db->single();

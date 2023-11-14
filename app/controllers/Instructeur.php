@@ -74,7 +74,7 @@ class Instructeur extends BaseController
              * Als er geen toegewezen voertuigen zijn komt de onderstaande tekst in de tabel
              */
             $tableRows = "<tr>
-                            <td colspan='8'>
+                            <td colspan='9'>
                                 Er zijn op dit moment nog geen voertuigen toegewezen aan deze instructeur
                             </td>
                           </tr>";
@@ -90,6 +90,10 @@ class Instructeur extends BaseController
                  */
                 $date_formatted = date_format(date_create($voertuig->Bouwjaar), 'd-m-Y');
 
+                $toegewezenHtml = $voertuig->Multiple
+                    ? "❌"
+                    : "✅";
+
                 $tableRows .= "<tr>
                                     <td>$voertuig->TypeVoertuig</td>
                                     <td>$voertuig->Type</td>
@@ -99,6 +103,7 @@ class Instructeur extends BaseController
                                     <td>$voertuig->RijbewijsCategorie</td>
                                     <td><a href='/instructeur/wijzig/$voertuig->Id'>Wijzigen</a></td>
                                     <td><a href='/instructeur/unassign/$Id/$voertuig->Id'>Verwijderen</a></td>
+                                    <td>$toegewezenHtml</td>
                             </tr>";
             }
         }
