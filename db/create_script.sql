@@ -15,7 +15,6 @@ CREATE DATABASE IF NOT EXISTS `backend-opdracht-3`;
 -- Use database backend-opdracht-3
 Use `backend-opdracht-3`;
 
-
 -- Step: 02
 -- Goal: Create a new table Instructeur
 -- **********************************************************************************
@@ -43,7 +42,6 @@ CREATE TABLE IF NOT EXISTS Instructeur
 
    ,CONSTRAINT      PK_Instructeur_Id   PRIMARY KEY CLUSTERED(Id)
 ) ENGINE=InnoDB;
-
 
 -- Step: 03
 -- Goal: Fill table Instructeur with data
@@ -74,7 +72,6 @@ VALUES
     ,('Bert', 'van', 'Sali', '06-48293823', '2023-01-10', '****', 1, NULL, SYSDATE(6), SYSDATE(6))
     ,('Mohammed', 'El', 'Yassidi', '06-34291234', '2010-06-14', '*****', 1, NULL, SYSDATE(6), SYSDATE(6));
 
-
 -- Step: 04
 -- Goal: Create a new table TypeVoertuig
 -- **********************************************************************************
@@ -99,7 +96,6 @@ CREATE TABLE IF NOT EXISTS TypeVoertuig
    ,CONSTRAINT      PK_TypeVoertuig_Id   PRIMARY KEY CLUSTERED(Id)
 ) ENGINE=InnoDB;
 
-
 -- Step: 05
 -- Goal: Fill table TypeVoertuig with data
 -- **********************************************************************************
@@ -123,8 +119,6 @@ VALUES
     ,('Vrachtwagen', 'C', 1, NULL, SYSDATE(6), SYSDATE(6))
     ,('Bus', 'D', 1, NULL, SYSDATE(6), SYSDATE(6))
     ,('Bromfiets', 'AM', 1, NULL, SYSDATE(6), SYSDATE(6));
-
-
 
 -- Step: 06
 -- Goal: Create a new table Voertuig
@@ -153,7 +147,6 @@ CREATE TABLE IF NOT EXISTS Voertuig
    ,CONSTRAINT      PK_Voertuig_Id   PRIMARY KEY CLUSTERED(Id)
    ,CONSTRAINT      FK_Voertuig_TypeVoertuigId_TypeVoertuig_Id  FOREIGN KEY (TypeVoertuigId) REFERENCES TypeVoertuig(Id)
 ) ENGINE=InnoDB;
-
 
 -- Step: 07
 -- Goal: Fill table Voertuig with data
@@ -190,8 +183,6 @@ VALUES
     ,('STP-12-U', 'Vespa', '2022-07-02', 'Benzine', 4, 1, NULL, SYSDATE(6), SYSDATE(6))
     ,('45-SD-23', 'Renault', '2023-01-01', 'Diesel', 3, 1, NULL, SYSDATE(6), SYSDATE(6));
 
-
-
 -- Step: 08
 -- Goal: Create a new table VoertuigInstructeur
 -- **********************************************************************************
@@ -219,7 +210,6 @@ CREATE TABLE IF NOT EXISTS VoertuigInstructeur
    ,CONSTRAINT      FK_VoertuigInstructeur_InstructeurId_Instructeur_Id  FOREIGN KEY (InstructeurId) REFERENCES Instructeur(Id)
 ) ENGINE=InnoDB;
 
-
 -- Step: 09
 -- Goal: Fill table VoertuigInstructeur with data
 -- **********************************************************************************
@@ -246,4 +236,3 @@ VALUES
     ,(4, 4, '2022-08-01', 1, NULL, SYSDATE(6), SYSDATE(6))
     ,(5, 1, '2019-08-30', 1, NULL, SYSDATE(6), SYSDATE(6))
     ,(10, 5, '2020-02-02', 1, NULL, SYSDATE(6), SYSDATE(6));
-   
