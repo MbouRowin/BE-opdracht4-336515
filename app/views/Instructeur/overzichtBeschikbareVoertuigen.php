@@ -14,23 +14,6 @@
 
     <h3><u><?= $data['title']; ?></u></h3>
 
-    <table>
-        <tbody>
-            <tr>
-                <th>Naam:</th>
-                <td><?= $data['naam']; ?></td>
-            </tr>
-            <tr>
-                <th>Datum in Dienst:</th>
-                <td><?= $data['datumInDienst']; ?></td>
-            </tr>
-            <tr>
-                <th>Aantal Sterren</th>
-                <td><?= $data['aantalSterren']; ?></td>
-            </tr>
-        </tbody>
-    </table>
-
     <?php if ($data['message']) : ?>
         <p id="message" style="color:red"><?= $data['message'] ?></p>
         <script>
@@ -46,18 +29,11 @@
             <th>Bouwjaar</th>
             <th>Brandstof</th>
             <th>RijbewijsCategorie</th>
-            <th>Toevoegen</th>
-            <th>Wijzigen</th>
-            <th>Verwijderen</th>
         </thead>
         <tbody>
             <?= $data['tableRows']; ?>
         </tbody>
     </table>
-
-
-
-
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
 </body>

@@ -14,7 +14,8 @@
 
 <body>
     <u><?= $data['title']; ?></u>
-    <p><a href="/Instructeur/overzichtAlleVoertuigen">Alle voertuigen</a></p>
+    <div><a href="/Instructeur/overzichtAlleVoertuigen">Alle voertuigen</a></div>
+    <div><a href="/Instructeur/overzichtBeschikbareVoertuigen">Alle beschikbare voertuigen</a></div>
 
     <table>
         <thead>

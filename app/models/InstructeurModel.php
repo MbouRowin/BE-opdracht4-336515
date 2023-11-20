@@ -89,11 +89,13 @@ class InstructeurModel
                 
                 ON          VOIN.VoertuigId = VOER.Id
 
-                INNER JOIN  Instructeur AS INST
+                LEFT JOIN  Instructeur AS INST
 
                 ON          VOIN.InstructeurId = INST.Id
-                
-                WHERE       VOIN.InstructeurId is null OR NOT INST.IsActief
+
+                WHERE       VOIN.InstructeurId IS NULL
+
+                OR         VOIN.IsActief = 0
                 
                 ORDER BY    VOER.Bouwjaar DESC";
 

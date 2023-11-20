@@ -91,7 +91,7 @@ class Instructeur extends BaseController
                 $date_formatted = date_format(date_create($voertuig->Bouwjaar), 'd-m-Y');
 
                 $toegewezenHtml = $voertuig->Multiple
-                    ? "❌"
+                    ? "<a href='/instructeur/reassignVoertuig/$instructeurInfo->Id/$voertuig->Id'>❌</a>"
                     : "✅";
 
                 $tableRows .= "<tr>
@@ -158,7 +158,7 @@ class Instructeur extends BaseController
         }
     }
 
-    public function overzichtBeschikbareVoertuigen($Id)
+    public function toevoegenOverzicht($Id)
     {
         session_start();
         $message = $_SESSION["message"] ?? null;
@@ -219,7 +219,7 @@ class Instructeur extends BaseController
 
 
         $data = [
-            'title'     => 'Alle beschikbare voertuigen',
+            'title'     => 'Toevoegen voertuig',
             'tableRows' => $tableRows,
             'naam'      => $naam,
             'datumInDienst' => $datumInDienst,
@@ -227,7 +227,7 @@ class Instructeur extends BaseController
             'message' => $message,
         ];
 
-        $this->view('Instructeur/overzichtBeschikbareVoertuigen', $data);
+        $this->view('Instructeur/toevoegen', $data);
     }
 
     public function toevoegen($voertuigId, $instructeurId)
@@ -253,7 +253,7 @@ class Instructeur extends BaseController
         session_start();
         $_SESSION["message"] = "Het door u geselecteerde voertuig is verwijderd";
 
-        header("Location: /instructeur/overzichtBeschikbareVoertuigen/$instructeurId");
+        header("Location: /instructeur/toevoegenOverzicht/$instructeurId");
     }
 
     public function overzichtAlleVoertuigen()
@@ -304,12 +304,65 @@ class Instructeur extends BaseController
 
 
         $data = [
-            'title'     => 'Alle beschikbare voertuigen',
+            'title'     => 'Alle voertuigen',
             'tableRows' => $tableRows,
             'message' => $message,
         ];
 
         $this->view('Instructeur/overzichtAlleVoertuigen', $data);
+    }
+
+    public function overzichtBeschikbareVoertuigen()
+    {
+        session_start();
+        $message = $_SESSION["message"] ?? null;
+        unset($_SESSION["message"]);
+
+        $result = $this->instructeurModel->getBeschikbareVoertuigen();
+
+
+        $tableRows = "";
+        if (empty($result)) {
+            /**
+             * Als er geen toegewezen voertuigen zijn komt de onderstaande tekst in de tabel
+             */
+            $tableRows = "<tr>
+                            <td colspan='9'>
+                                Er zijn op dit moment geen voertuigen
+                            </td>
+                          </tr>
+                          ";
+        } else {
+            /**
+             * Bouw de rows op in een foreach-loop en stop deze in de variabele
+             * $tabelRows
+             */
+            foreach ($result as $voertuig) {
+
+                /**
+                 * Zet de datum in het juiste format
+                 */
+                $date_formatted = date_format(date_create($voertuig->Bouwjaar), 'd-m-Y');
+
+                $tableRows .= "<tr>
+                                    <td>$voertuig->TypeVoertuig</td>
+                                    <td>$voertuig->Type</td>
+                                    <td>$voertuig->Kenteken</td>
+                                    <td>$date_formatted</td>
+                                    <td>$voertuig->Brandstof</td>
+                                    <td>$voertuig->RijbewijsCategorie</td>
+                            </tr>";
+            }
+        }
+
+
+        $data = [
+            'title'     => 'Alle beschikbare voertuigen',
+            'tableRows' => $tableRows,
+            'message' => $message,
+        ];
+
+        $this->view('Instructeur/overzichtBeschikbareVoertuigen', $data);
     }
 
     function unassignEnVerwijder($voertuigId)
@@ -341,6 +394,17 @@ class Instructeur extends BaseController
 
         session_start();
         $_SESSION["message"] = "Instructeur $instructeur->Voornaam $instructeur->Tussenvoegsel $instructeur->Achternaam is ziek/met verlof gemeld";
+
+        header("Location: /instructeur/overzichtVoertuigen/$instructeurId");
+    }
+
+    function reassignVoertuig($instructeurId, $voertuigId)
+    {
+        $this->instructeurModel->unassignVoertuig($voertuigId);
+        $this->instructeurModel->assignVoertuigToInstructeur($voertuigId, $instructeurId);
+
+        session_start();
+        $_SESSION["message"] = "Het geselecteerde voertuig is weer toegewezen";
 
         header("Location: /instructeur/overzichtVoertuigen/$instructeurId");
     }
