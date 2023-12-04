@@ -16,6 +16,13 @@
     <div><a href="/Instructeur/overzichtAlleVoertuigen">Alle voertuigen</a></div>
     <div><a href="/Instructeur/overzichtBeschikbareVoertuigen">Alle beschikbare voertuigen</a></div>
 
+    <?php if ($data['message']) : ?>
+        <p id="message" style="color:red"><?= $data['message'] ?></p>
+        <script>
+            setTimeout(() => document.getElementById("message").remove(), 3000);
+        </script>
+    <?php endif ?>
+
     <table>
         <thead>
             <th>Voornaam</th>
@@ -26,6 +33,7 @@
             <th>Aantal sterren</th>
             <th>Voertuigen</th>
             <th>Ziekte/Verlof</th>
+            <th>Verwijder</th>
         </thead>
         <tbody>
             <?= $data['rows']; ?>

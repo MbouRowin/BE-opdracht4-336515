@@ -11,6 +11,10 @@ class Instructeur extends BaseController
 
     public function overzichtInstructeur()
     {
+        session_start();
+        $message = $_SESSION["message"] ?? null;
+        unset($_SESSION["message"]);
+
         $result = $this->instructeurModel->getInstructeurs();
         $rows = "";
 
@@ -25,6 +29,10 @@ class Instructeur extends BaseController
                 ? "<a href='/instructeur/maakInactief/$instructeur->Id'><i class='bi bi-hand-thumbs-up'></i></a>"
                 : "<a href='/instructeur/maakActief/$instructeur->Id'><i class='bi bi-bandaid'></i></a>";
 
+            $deleteHtml = $instructeur->IsActief
+                ? "<a href='/instructeur/deleteInstructeur/$instructeur->Id'>Verwijder</a>"
+                : "Met verlof";
+
             $rows .= "<tr>
                         <td>$instructeur->Voornaam</td>
                         <td>$instructeur->Tussenvoegsel</td>
@@ -37,13 +45,15 @@ class Instructeur extends BaseController
                                 <i class='bi bi-car-front'></i>
                             </a>
                         </td>
-                        <td>$actiefInactiefHtml</td>         
+                        <td>$actiefInactiefHtml</td>
+                        <td>$deleteHtml</td>
                       </tr>";
         }
 
         $data = [
             'title' => 'Instructeurs in dienst',
-            'rows' => $rows
+            'rows' => $rows,
+            'message' => $message,
         ];
 
         $this->view('Instructeur/overzichtInstructeur', $data);
@@ -407,5 +417,17 @@ class Instructeur extends BaseController
         $_SESSION["message"] = "Het geselecteerde voertuig is weer toegewezen";
 
         header("Location: /instructeur/overzichtVoertuigen/$instructeurId");
+    }
+
+    function deleteInstructeur($instructeurId)
+    {
+        $instructeur = $this->instructeurModel->getInstructeurById($instructeurId);
+
+        $this->instructeurModel->deleteInstructeur($instructeurId);
+
+        session_start();
+        $_SESSION["message"] = "Instructeur $instructeur->Voornaam $instructeur->Tussenvoegsel $instructeur->Achternaam is definitief verwijdert en al zijn eerder toegewezen voertuigen zijn vrijgegeven";
+
+        header("Location: /Instructeur/overzichtInstructeur");
     }
 }
