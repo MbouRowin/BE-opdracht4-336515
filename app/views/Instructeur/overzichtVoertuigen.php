@@ -14,6 +14,10 @@
 
     <h3><u><?= $data['title']; ?></u></h3>
 
+    <p>
+        <a href="/Instructeur/overzichtInstructeur">Ga terug</a>
+    </p>
+
     <table>
         <tbody>
             <tr>
